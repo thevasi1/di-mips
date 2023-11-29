@@ -5,6 +5,10 @@
  */
 package di_mips;
 
+import instruction.Instruction;
+import instruction.Operator;
+import instruction.Stages;
+
 /**
  *
  * @author Tomas
@@ -15,7 +19,7 @@ public class DI_MIPS {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        
     }
     
 }
