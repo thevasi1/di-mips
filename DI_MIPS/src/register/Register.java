@@ -5,6 +5,7 @@
  */
 package register;
 
+import di_mips.FileReader;
 import instruction.Instruction;
 import java.util.Stack;
 
@@ -16,10 +17,25 @@ public class Register {
     
     protected int value;
     protected Dependency[] dependencies;
-    Stack pila = new Stack();
+    Stack<Instruction> pila = new Stack();
     Instruction inst_aux;
     
-    //inst_aux = pila.pop();
+    // We have two because is double issue.
+    Instruction inst_1;
+    Instruction inst_2;
+    
+    private void registerStalls() {
+        while (true) {
+            inst_aux = pila.pop();
+            if (inst_aux.equals(null)) {
+                inst_1 = FileReader.readNextLine();;
+            } else {
+                inst_1 = FileReader.readNextLine();
+                inst_2 = FileReader.readNextLine();
+            }
+        }
+        
+    }
     
 }
 

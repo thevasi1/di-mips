@@ -18,8 +18,15 @@ public class DI_MIPS {
     /**
      * @param args the command line arguments
      */
+    
+    private void begin() {
+        FileReader.readNextLine();
+    }
+    
     public static void main(String[] args) {
-        
+
+        (new DI_MIPS()).begin();
+
     }
     
 }
