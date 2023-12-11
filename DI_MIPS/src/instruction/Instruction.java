@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * This class represents an instruction of the DI-MIPS
  */
 package instruction;
 
@@ -20,6 +18,15 @@ public class Instruction {
     Register src2;
     Stages stage;
 
+    /**
+     * Constructor of an instruction
+     * @param id unique identifier of the instruction
+     * @param operator type of instruction
+     * @param dst destination register
+     * @param src1 source1 register
+     * @param src2 source2 register
+     * @param stage stage the instruction is in
+     */
     public Instruction(int id, Operator operator, Register dst, Register src1, Register src2, Stages stage) {
         this.id = id;
         this.operator = operator;
@@ -29,8 +36,27 @@ public class Instruction {
         this.stage = stage;
     }
     
-    public void execute(int cic){
-
+    /**
+     * Launches the respective execution of an instruction depending on the
+     * operator, stage, cycle and id
+     * @param cic cicle of the execution of the stage
+     */
+    public void executeStage(int cic){
+        switch (operator) {
+            case ADD:
+                // executorADD(stage, cicle, id)
+                break;
+            case SUB:
+                break;
+            case LD:
+                break;
+            case SW:
+                break;
+            case BEQ:
+                break;
+            default:
+                throw new AssertionError();
+        }
     }
 
     public void moveNextStage(){
