@@ -35,34 +35,36 @@ public class Instruction {
         this.src2 = src2;
         this.stage = stage;
     }
-    
-    /**
-     * Launches the respective execution of an instruction depending on the
-     * operator, stage, cycle and id
-     * @param cic cicle of the execution of the stage
-     */
-    public void executeStage(int cic){
-        switch (operator) {
-            case ADD:
-                // executorADD(stage, cicle, id)
-                break;
-            case SUB:
-                break;
-            case LD:
-                break;
-            case SW:
-                break;
-            case BEQ:
-                break;
-            default:
-                throw new AssertionError();
-        }
+
+    public int getId() {
+        return id;
     }
 
-    public void moveNextStage(){
-        if(stage != Stages.W){
-            Stages[] stages = Stages.values();
-            stage = stages[stage.ordinal() + 1];
+    public Operator getOperator() {
+        return operator;
+    }
+
+    public Register getDst() {
+        return dst;
+    }
+
+    public Register getSrc1() {
+        return src1;
+    }
+
+    public Register getSrc2() {
+        return src2;
+    }
+
+    public Stages getStage() {
+        return stage;
+    }
+    
+    
+    public void setNextStge(){
+        int position = stage.ordinal();
+        if(position < Stages.values().length - 1){
+            stage = Stages.values()[position + 1];
         }
     }
 }
