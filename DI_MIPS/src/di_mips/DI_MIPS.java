@@ -20,7 +20,7 @@ public class DI_MIPS {
      */
     
     private void begin() {
-        FileReader.readNextLine();
+        File_Reader.readNextLine();
     }
     
     public static void main(String[] args) {

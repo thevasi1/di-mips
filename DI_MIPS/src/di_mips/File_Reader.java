@@ -5,6 +5,10 @@
  */
 package di_mips;
 
+import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.IOException;
+
 import instruction.Instruction;
 import instruction.Operator;
 import register.Register;
@@ -13,7 +17,7 @@ import register.Register;
  *
  * @author Tomas
  */
-public class FileReader {
+public class File_Reader {
     
     static String line;
     static Instruction current_inst;
@@ -22,6 +26,17 @@ public class FileReader {
 //        line.read(); // BufferedReader stores the file line into variable "line" 
         transform(); // Turns the line into an instruction and updates "current_inst"
         return current_inst;
+    }
+
+    public static void readLine(String file) {
+        
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            if ((line = br.readLine()) == null) { // Read the String line
+                System.out.println("End of file reached.");
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
     }
 
     private static void transform() { // Turns the line into an instruction and updates "current_inst"
@@ -60,5 +75,9 @@ public class FileReader {
             src2Str += lineArr[i];
             i++;
         }
+    }
+
+    private File_Reader(String file) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

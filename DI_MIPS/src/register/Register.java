@@ -5,7 +5,7 @@
  */
 package register;
 
-import di_mips.FileReader;
+import di_mips.File_Reader;
 import instruction.Instruction;
 import java.util.Stack;
 
@@ -28,10 +28,10 @@ public class Register {
         while (true) {
             inst_aux = pila.pop();
             if (inst_aux.equals(null)) {
-                inst_1 = FileReader.readNextLine();;
+                inst_1 = File_Reader.readNextLine();;
             } else {
-                inst_1 = FileReader.readNextLine();
-                inst_2 = FileReader.readNextLine();
+                inst_1 = File_Reader.readNextLine();
+                inst_2 = File_Reader.readNextLine();
             }
         }
         
