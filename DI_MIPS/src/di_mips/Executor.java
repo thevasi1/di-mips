@@ -6,7 +6,6 @@ package di_mips;
 
 import instruction.Instruction;
 import instruction.Stages;
-import javafx.stage.Stage;
 
 /**
  *
@@ -21,7 +20,7 @@ public class Executor {
     /**
      * Launches the respective execution of an instruction with the cicle
      * @param ins instruction data
-     * @param cic cicle of the execution of the stage
+     * @param cicle cicle of the execution of the stage
      */
     public void executeStage(Instruction ins, int cicle){
         switch (ins.getOperator()) {

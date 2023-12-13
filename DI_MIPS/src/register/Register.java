@@ -7,6 +7,7 @@ package register;
 
 import di_mips.File_Reader;
 import instruction.Instruction;
+import java.util.ArrayList;
 import java.util.Stack;
 
 /**
@@ -15,11 +16,10 @@ import java.util.Stack;
  */
 public class Register {
     
-    protected int value;
-    protected Dependency[] dependencies;
-    Stack<Instruction> pila = new Stack();
-    Instruction inst_aux;
+    int value;
+    ArrayList<Dependency> dependencies;
     
+<<<<<<< Updated upstream
     // We have two because is double issue.
     Instruction inst_1;
     Instruction inst_2;
@@ -35,7 +35,12 @@ public class Register {
             }
         }
         
+=======
+    public Register(int value){
+        this.value = value;
+>>>>>>> Stashed changes
     }
+    
     
 }
 

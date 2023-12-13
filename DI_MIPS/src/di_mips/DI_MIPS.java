@@ -20,7 +20,28 @@ public class DI_MIPS {
      */
     
     private void begin() {
+<<<<<<< Updated upstream
         File_Reader.readNextLine();
+=======
+        FileReader.readNextLine();
+        // Init registers
+        
+        // In loop
+            // Read instructions
+            //      Parse instructions
+            // Add the convinient instructions to the queue
+            // Execute the instructions on the queue
+            // Refresh the queue
+            
+            
+            
+            
+        // Can Execute?
+        // TRUE
+            // Execute
+        // FALSE
+            // Stall this and all the next instructions
+>>>>>>> Stashed changes
     }
     
     public static void main(String[] args) {
