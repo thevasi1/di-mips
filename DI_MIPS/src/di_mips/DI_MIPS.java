@@ -20,10 +20,7 @@ public class DI_MIPS {
      */
     
     private void begin() {
-<<<<<<< Updated upstream
         File_Reader.readNextLine();
-=======
-        FileReader.readNextLine();
         // Init registers
         
         // In loop
@@ -41,7 +38,6 @@ public class DI_MIPS {
             // Execute
         // FALSE
             // Stall this and all the next instructions
->>>>>>> Stashed changes
     }
     
     public static void main(String[] args) {

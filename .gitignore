@@ -1,3 +1,4 @@
 node_modules/*
 /DI_MIPS/build/
 /DI_MIPS/nbproject/private/
+.metadata/
