@@ -18,29 +18,40 @@ public class Register {
     
     int value;
     ArrayList<Dependency> dependencies;
-    
-<<<<<<< Updated upstream
-    // We have two because is double issue.
-    Instruction inst_1;
-    Instruction inst_2;
-    
-    private void registerStalls() {
-        while (true) {
-            inst_aux = pila.pop();
-            if (inst_aux.equals(null)) {
-                inst_1 = File_Reader.readNextLine();;
-            } else {
-                inst_1 = File_Reader.readNextLine();
-                inst_2 = File_Reader.readNextLine();
-            }
-        }
-        
-=======
+
     public Register(int value){
         this.value = value;
->>>>>>> Stashed changes
     }
     
+    public void setValue(int value){
+        this.value = value;
+    }
     
+    public int getValue(){
+        return this.value;
+    }
+    
+    void addDependency(int instruction, int cicle, char type){
+        Dependency d = new Dependency(instruction, cicle, type);
+        dependencies.add(d);
+    }
+    
+    void removeDependency(int instruction, char type){
+        Dependency d = new Dependency(instruction, 0, type);
+        dependencies.remove(d);
+    }
+    
+    boolean hasDependency(){
+        for (int i = 0; i < dependencies.size(); i++) {
+            for (int j = i; j < dependencies.size(); j++) {
+                if(dependencies.get(i).compareTo(dependencies.get(j)) == -1){
+                    if (dependencies.get(i).isDependency(dependencies.get(j))){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }
 

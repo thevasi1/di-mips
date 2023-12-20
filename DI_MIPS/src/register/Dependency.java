@@ -9,7 +9,7 @@ package register;
  *
  * @author Tomas
  */
-public class Dependency {
+public class Dependency implements Comparable {
     
     int cicle;
     int instruction;
@@ -21,19 +21,26 @@ public class Dependency {
         this.type = type;
     }
     
-    public boolean readAfterWrite(Dependency d){
+    public boolean isDependency(Dependency d){
         if(type == 'r' && d.type == 'w'){
             if(cicle > d.cicle){
                 return true;
             } else if(cicle == d.cicle){
                 return instruction>d.instruction;
             }
+        } else if(type == 'w' && d.type == 'w'){
+            return cicle >= d.cicle && instruction > d.instruction;
         }
         return false;
     }
     
-    public boolean writeAfterWrite(Dependency d){
-        return (type == 'w' && type == d.type && cicle >= d.cicle && instruction > d.instruction);
+    @Override
+    public int compareTo(Object t) {
+        Dependency d = (Dependency) t;
+        if(instruction == d.instruction && type == d.type){
+            return 1;
+        }
+        return -1;
     }
     
 }
