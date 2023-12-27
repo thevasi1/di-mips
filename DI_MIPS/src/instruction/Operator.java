@@ -10,6 +10,6 @@ package instruction;
  * @author Tomas
  */
 public enum Operator{
-    ADD, SUB, LD, SW, BEQ
+    NOP, ADD, SUB, LD, SW, BEQ
 }
 

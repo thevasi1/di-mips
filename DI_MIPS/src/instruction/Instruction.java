@@ -61,7 +61,7 @@ public class Instruction {
     }
     
     
-    public void setNextStge(){
+    public void setNextStage(){
         int position = stage.ordinal();
         if(position < Stages.values().length - 1){
             stage = Stages.values()[position + 1];
