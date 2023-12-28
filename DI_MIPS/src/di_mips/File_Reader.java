@@ -11,6 +11,7 @@ import java.io.IOException;
 
 import instruction.Instruction;
 import instruction.Operator;
+import instruction.Stages;
 import java.util.HashMap;
 import register.Register;
 
@@ -22,6 +23,7 @@ public class File_Reader {
     
     static String line;
     static Instruction current_inst;
+    static int numLin_inst = 0;
     
     public static Instruction readNextLine() {
 //        readLine(file); // BufferedReader stores the file line into variable "line"
@@ -42,7 +44,7 @@ public class File_Reader {
         return true;
     }
 
-    public static void transformDeclarations(String file) { 
+    public static void transformDeclarations(String file) { // REGISTERS
         
         HashMap<String, Register> map = new HashMap<>();
         while (readLine(file)) {
@@ -77,7 +79,7 @@ public class File_Reader {
         
     }
     
-    public static void transformCode(String file) { // Turns the line into an instruction and updates "current_inst"
+    public static void getNextInstruction(String file) { // INSTRUCTIONS
         
         char[] lineArr = line.toCharArray();
         int i = 0;
@@ -98,23 +100,55 @@ public class File_Reader {
             opStr += lineArr[i];
             i++;
         }
+        op = transformIntoOp(opStr);
         i++;
         while (lineArr[i] != ',') { // dst
             dstStr += lineArr[i];
             i++;
         }
+        dst = transformIntoReg(dstStr);
         i++;
         while (lineArr[i] != ',') { // src1
             src1Str += lineArr[i];
             i++;
         }
+        src1 = transformIntoReg(src1Str);
         i++;
         while (lineArr[i] != ';') { // src2
             src2Str += lineArr[i];
             i++;
         }
+        src2 = transformIntoReg(src2Str);
         
+        Instruction inst = new Instruction(numLin_inst, op, dst, src2, src2, Stages.F);
+        numLin_inst++;
         readLine(file);
+    }
+
+    private static Operator transformIntoOp(String opStr) {
+        Operator op = Operator.valueOf(opStr);
+        return op;
+    }
+
+    private static Register transformIntoReg(String dstStr) {
+        char[] dstCharArr = dstStr.toCharArray();
+        int i = 0;
+        String valueStr = "";
+        int value;
+        
+        while (dstCharArr[i] == 'R' || dstCharArr[i] == ' '){
+            i++; // Skip until we find the number
+        }
+        
+        while (dstCharArr[i] != '0' || dstCharArr[i] != '1' || dstCharArr[i] != '2' || dstCharArr[i] != '3' || 
+                dstCharArr[i] != '4' || dstCharArr[i] != '5' || dstCharArr[i] != '6' || dstCharArr[i] != '7' || 
+                dstCharArr[i] != '8' || dstCharArr[i] != '9') {
+            valueStr += String.valueOf(dstCharArr[i]);
+            i++;
+        }
+        value = Integer.valueOf(valueStr);
+        Register reg = new Register(value);
+        return reg;
     }
 
     private File_Reader(String file) {
