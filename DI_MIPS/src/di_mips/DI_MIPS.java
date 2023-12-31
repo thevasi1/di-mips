@@ -8,6 +8,7 @@ package di_mips;
 import instruction.Instruction;
 import instruction.Operator;
 import instruction.Stages;
+import register.Register;
 
 /**
  *
@@ -19,12 +20,16 @@ public class DI_MIPS {
      * @param args the command line arguments
      */
     
+    private static final int NUM_REG_MACHINE = 16;
+    static Register[] registers = new Register[NUM_REG_MACHINE];
+    
     private void begin() {
-        File_Reader.readNextLine();
+        File_Reader.initRegisters("registers.txt", registers);
         // Init registers
         
         // In loop
             // Read instructions
+            Instruction inst = File_Reader.getNextInstruction("program.txt");
             //      Parse instructions
             // Add the convinient instructions to the queue
             // Execute the instructions on the queue
