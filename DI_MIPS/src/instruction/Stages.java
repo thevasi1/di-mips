@@ -10,5 +10,5 @@ package instruction;
  * @author Tomas
  */
 public enum Stages {
-    F, D, X, M, W
+    S, F, D, X, M, W
 }

@@ -31,17 +31,17 @@ public class Register {
         return this.value;
     }
     
-    void addDependency(int instruction, int cicle, char type){
+    public void addDependency(int instruction, int cicle, char type){
         Dependency d = new Dependency(instruction, cicle, type);
         dependencies.add(d);
     }
-    
-    void removeDependency(int instruction, char type){
+     
+    public void removeDependency(int instruction, char type){
         Dependency d = new Dependency(instruction, 0, type);
         dependencies.remove(d);
     }
     
-    boolean hasDependency(){
+    public boolean hasDependency(){
         for (int i = 0; i < dependencies.size(); i++) {
             for (int j = i; j < dependencies.size(); j++) {
                 if(dependencies.get(i).compareTo(dependencies.get(j)) == -1){
