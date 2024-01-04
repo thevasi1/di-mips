@@ -30,7 +30,6 @@ public class File_Reader {
             char[] lineArr = line.toCharArray();
             int i = 0;
 
-            String R_name = "";
             String R_value = "";
             int R_num_value;
 
@@ -79,23 +78,44 @@ public class File_Reader {
         }
         op = transformIntoOp(opStr);
         i++;
-        while (lineArr[i] != ',') { // dst
-            dstStr += lineArr[i];
+        
+        if ("LD".equals(opStr) || "SW".equals(opStr)) { // LD, SW
+            
+            while (lineArr[i] != ',') { // dst
+                dstStr += lineArr[i];
+                i++;
+            }
+            dst = transformIntoReg(dstStr);
             i++;
-        }
-        dst = transformIntoReg(dstStr);
-        i++;
-        while (lineArr[i] != ',') { // src1
-            src1Str += lineArr[i];
+            
+            src1 = null;                // src1
+            
+            while (lineArr[i] != ';') { // src2
+                src2Str += lineArr[i];
+                i++;
+            }
+            src2 = transformIntoReg(src2Str);
+            
+        } else {                                        // ADD, SUB
+            while (lineArr[i] != ',') { // dst
+                dstStr += lineArr[i];
+                i++;
+            }
+            dst = transformIntoReg(dstStr);
             i++;
-        }
-        src1 = transformIntoReg(src1Str);
-        i++;
-        while (lineArr[i] != ';') { // src2
-            src2Str += lineArr[i];
+            while (lineArr[i] != ',') { // src1
+                src1Str += lineArr[i];
+                i++;
+            }
+            src1 = transformIntoReg(src1Str);
             i++;
+            while (lineArr[i] != ';') { // src2
+                src2Str += lineArr[i];
+                i++;
+            }
+            src2 = transformIntoReg(src2Str);
         }
-        src2 = transformIntoReg(src2Str);
+        
         
         Instruction inst = new Instruction(numLin_inst, op, dst, src1, src2, Stages.F);
         numLin_inst++;
@@ -137,6 +157,28 @@ public class File_Reader {
         value = Integer.valueOf(valueStr);
         Register reg = new Register(value);
         return reg;
+    }
+
+    public boolean findBranchLine(String file, String label){
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            numLin_inst = 0;
+            while ((line = br.readLine()) != null) {
+                numLin_inst++;
+                if (line.equals(label)) {
+                    System.out.println("Label found.");
+                    break;
+                }
+            }
+            if (line == null) {
+                System.out.println("End of file reached and label not found.");
+                return false;
+            } else { // line == label
+                getNextInstruction(file);
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+        return true;
     }
 
 }
