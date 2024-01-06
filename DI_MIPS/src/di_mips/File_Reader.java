@@ -26,115 +26,128 @@ public class File_Reader {
 
     public static void initRegisters(String file, Register[] registers) { // REGISTERS
         int num_reg = 0;
-        while (readLine(file)) {
-            char[] lineArr = line.toCharArray();
-            int i = 0;
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            while ((line = br.readLine()) != null) {
+                char[] lineArr = line.toCharArray();
+                int i = 0;
 
-            String R_value = "";
-            int R_num_value;
+                String R_value = "";
+                int R_num_value;
 
-            while (lineArr[i] == 'R' || lineArr[i] != ' ' || lineArr[i] != '=') { // Skip until we find the value (number)
-                i++;
-            }
-            while (i < lineArr.length) { // Read value (number) until we get to the end of line
-                if (Character.isDigit(lineArr[i])) {
-                    R_value += lineArr[i];
-                    i++;
-                } else {
-                    System.out.println("User error dtected!!!"
-                            + "\n Wrong register value at line " + num_reg + "of file " + file);
+                while (lineArr[i] == 'R' || lineArr[i] != ' ' || lineArr[i] != '=') { // Skip until we find the value (number)
                     i++;
                 }
-            }
-            
-            R_num_value = Integer.valueOf(R_value);
-            Register register = new Register(R_num_value);
-            registers[num_reg] = register;
-            num_reg++;
-        }
-        
-    }
-    
-    public static Instruction getNextInstruction(String file) { // INSTRUCTIONS
-        
-        char[] lineArr = line.toCharArray();
-        int i = 0;
-        
-        // Operator
-        Operator op;
-        String opStr = "";
-        
-        // Registers
-        Register dst;
-        String dstStr = "";
-        Register src1;
-        String src1Str = "";
-        Register src2;
-        String src2Str = "";
-        
-        while (lineArr[i] != ' ') { // op
-            opStr += lineArr[i];
-            i++;
-        }
-        op = transformIntoOp(opStr);
-        i++;
-        
-        if ("LD".equals(opStr) || "SW".equals(opStr)) { // LD, SW
-            
-            while (lineArr[i] != ',') { // dst
-                dstStr += lineArr[i];
-                i++;
-            }
-            dst = transformIntoReg(dstStr);
-            i++;
-            
-            src1 = null;                // src1
-            
-            while (lineArr[i] != ';') { // src2
-                src2Str += lineArr[i];
-                i++;
-            }
-            src2 = transformIntoReg(src2Str);
-            
-        } else {                                        // ADD, SUB
-            while (lineArr[i] != ',') { // dst
-                dstStr += lineArr[i];
-                i++;
-            }
-            dst = transformIntoReg(dstStr);
-            i++;
-            while (lineArr[i] != ',') { // src1
-                src1Str += lineArr[i];
-                i++;
-            }
-            src1 = transformIntoReg(src1Str);
-            i++;
-            while (lineArr[i] != ';') { // src2
-                src2Str += lineArr[i];
-                i++;
-            }
-            src2 = transformIntoReg(src2Str);
-        }
-        
-        
-        Instruction inst = new Instruction(numLin_inst, op, dst, src1, src2, Stages.F);
-        numLin_inst++;
-        readLine(file);
-        
-        return inst;
-    }
+                while (i < lineArr.length) { // Read value (number) until we get to the end of line
+                    if (Character.isDigit(lineArr[i])) {
+                        R_value += lineArr[i];
+                        i++;
+                    } else {
+                        System.out.println("User error dtected!!!"
+                                + "\n Wrong register value at line " + num_reg + "of file " + file);
+                        i++;
+                    }
+                }
 
-    private static boolean readLine(String file) { // Generic file reader in java for a txt file.
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            if ((line = br.readLine()) == null) { // Read the String line
-                System.out.println("End of file reached.");
-                return false; // If it's done readding the file
+                R_num_value = Integer.valueOf(R_value);
+                Register register = new Register(R_num_value);
+                registers[num_reg] = register;
+                num_reg++;
             }
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
         }
-        return true;
     }
+    
+    public static Instruction getNextInstruction(String file) { // INSTRUCTIONS
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            if ((line = br.readLine()) == null) { // Read the String line
+                System.out.println("End of file reached.");
+            } else {
+                char[] lineArr = line.toCharArray();
+                int i = 0;
+
+                // Operator
+                Operator op;
+                String opStr = "";
+
+                // Registers
+                Register dst;
+                String dstStr = "";
+                Register src1;
+                String src1Str = "";
+                Register src2;
+                String src2Str = "";
+                
+                
+                while (lineArr[i] != ' ') { // op
+                    opStr += lineArr[i];
+                    i++;
+                }
+                op = transformIntoOp(opStr);
+                i++;
+
+                if ("LD".equals(opStr) || "SW".equals(opStr)) { // LD, SW
+
+                    while (lineArr[i] != ',') { // dst
+                        dstStr += lineArr[i];
+                        i++;
+                    }
+                    dst = transformIntoReg(dstStr);
+                    i++;
+
+                    src1 = null;                // src1
+
+                    while (lineArr[i] != ';') { // src2
+                        src2Str += lineArr[i];
+                        i++;
+                    }
+                    src2 = transformIntoReg(src2Str);
+
+                } else {                                        // ADD, SUB
+                    while (lineArr[i] != ',') { // dst
+                        dstStr += lineArr[i];
+                        i++;
+                    }
+                    dst = transformIntoReg(dstStr);
+                    i++;
+                    while (lineArr[i] != ',') { // src1
+                        src1Str += lineArr[i];
+                        i++;
+                    }
+                    src1 = transformIntoReg(src1Str);
+                    i++;
+                    while (lineArr[i] != ';') { // src2
+                        src2Str += lineArr[i];
+                        i++;
+                    }
+                    src2 = transformIntoReg(src2Str);
+                }
+
+
+                Instruction inst = new Instruction(numLin_inst, op, dst, src1, src2, Stages.F);
+                numLin_inst++;
+                // readLine(file);
+
+                return inst;
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+        return null; // Only in failure or end-of-file case
+    }
+
+//    private static boolean readLine(String file) { // Generic file reader in java for a txt file.
+//        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+//            if ((line = br.readLine()) == null) { // Read the String line
+//                System.out.println("End of file reached.");
+//                return false; // If it's done readding the file
+//            }
+//        } catch (IOException e) {
+//            System.err.println("Error reading file: " + e.getMessage());
+//        }
+//        return true;
+//    }
 
     private static Operator transformIntoOp(String opStr) {
         Operator op = Operator.valueOf(opStr);
@@ -169,10 +182,10 @@ public class File_Reader {
                     break;
                 }
             }
-            if (line == null) {
+            if (line == null) { // End of file reached (not found)
                 System.out.println("End of file reached and label not found.");
                 return false;
-            } else { // line == label
+            } else { // line = label
                 getNextInstruction(file);
             }
         } catch (IOException e) {
