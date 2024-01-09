@@ -105,11 +105,12 @@ public class Executor {
         ins.setNextStage();
     }
     
-    private int executeBEQ(Instruction ins, int cicle){
+    private void executeBEQ(Instruction ins, int cicle){
         if(ins.getStage().equals(Stages.D)){
-            
+            if(ins.getSrc1().getValue() == ins.getSrc2().getValue()){
+                //code to jump
+            }
         }
-        return 0;
     }
     
     public boolean canExecute(Instruction ins){

@@ -24,7 +24,7 @@ public class File_Reader {
     static Instruction current_inst;
     static int numLin_inst = 0;
 
-    public static void initRegisters(String file, Register[] registers) { // REGISTERS
+    public void initRegisters(String file, Register[] registers) { // REGISTERS
         int num_reg = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             while ((line = br.readLine()) != null) {
@@ -58,7 +58,7 @@ public class File_Reader {
         }
     }
     
-    public static Instruction getNextInstruction(String file) { // INSTRUCTIONS
+    public Instruction getNextInstruction(String file) { // INSTRUCTIONS
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             if ((line = br.readLine()) == null) { // Read the String line
@@ -149,12 +149,12 @@ public class File_Reader {
 //        return true;
 //    }
 
-    private static Operator transformIntoOp(String opStr) {
+    private Operator transformIntoOp(String opStr) {
         Operator op = Operator.valueOf(opStr);
         return op;
     }
 
-    private static Register transformIntoReg(String dstStr) {
+    private Register transformIntoReg(String dstStr) {
         char[] dstCharArr = dstStr.toCharArray();
         int i = 0;
         String valueStr = "";
