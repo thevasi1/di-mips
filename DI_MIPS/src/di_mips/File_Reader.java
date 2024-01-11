@@ -22,54 +22,54 @@ public class File_Reader {
     
     private String line;
     private static int numLin_inst = 0;
-    private String file;
+    private String inst_file;
+    private String reg_file = "registers.txt";
     private BufferedReader br;
 
-    public File_Reader(String file) {
-        this.file = file;
-        try (BufferedReader buffread = new BufferedReader(new FileReader(file))){
-            br = buffread;
+    public File_Reader(String inst_file, Register[] registers) {
+        this.inst_file = inst_file;
+        try (BufferedReader br_reg = new BufferedReader(new FileReader(reg_file))){
+            br = br_reg; // We read the registers file first
+            initRegisters(registers);
+            BufferedReader br_inst = new BufferedReader(new FileReader(inst_file));
+            br = br_inst;
         } catch (IOException e){
             System.err.println("Error reading file: " + e.getMessage());
         }
+        
     }
 
-    public void initRegisters(Register[] registers) { // REGISTERS
+    private void initRegisters(Register[] registers) throws IOException{ // REGISTERS
         int num_reg = 0;
-        try {
-            while ((line = br.readLine()) != null) {
-                char[] lineArr = line.toCharArray();
-                int i = 0;
+        while ((line = br.readLine()) != null) {
+            char[] lineArr = line.toCharArray();
+            int i = 0;
 
-                String R_value = "";
-                int R_num_value;
+            String R_value = "";
+            int R_num_value;
 
-                while (lineArr[i] == 'R' || lineArr[i] != ' ' || lineArr[i] != '=') { // Skip until we find the value (number)
+            while (lineArr[i] == 'R' || lineArr[i] != ' ' || lineArr[i] != '=') { // Skip until we find the value (number)
+                i++;
+            }
+            while (i < lineArr.length) { // Read value (number) until we get to the end of line
+                if (Character.isDigit(lineArr[i])) {
+                    R_value += lineArr[i];
+                    i++;
+                } else {
+                    System.out.println("User error dtected!!!"
+                            + "\n Wrong register value at line " + num_reg + "of file " + inst_file);
                     i++;
                 }
-                while (i < lineArr.length) { // Read value (number) until we get to the end of line
-                    if (Character.isDigit(lineArr[i])) {
-                        R_value += lineArr[i];
-                        i++;
-                    } else {
-                        System.out.println("User error dtected!!!"
-                                + "\n Wrong register value at line " + num_reg + "of file " + file);
-                        i++;
-                    }
-                }
-
-                R_num_value = Integer.valueOf(R_value);
-                Register register = new Register(R_num_value);
-                registers[num_reg] = register;
-                num_reg++;
             }
-        } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+
+            R_num_value = Integer.valueOf(R_value);
+            Register register = new Register(R_num_value);
+            registers[num_reg] = register;
+            num_reg++;
         }
     }
     
     public Instruction getNextInstruction() { // INSTRUCTIONS
-
         try {
             if ((line = br.readLine()) == null) { // Read the String line
                 System.out.println("End of file reached.");
@@ -171,7 +171,7 @@ public class File_Reader {
 
     public boolean findBranchLine(String label){
         try {
-            br = new BufferedReader(new FileReader(file)); // We read the file from the beginning
+            br = new BufferedReader(new FileReader(inst_file)); // We read the file from the beginning
             numLin_inst = 0;
             while ((line = br.readLine()) != null) {
                 numLin_inst++;
@@ -183,13 +183,12 @@ public class File_Reader {
             if (line == null) { // End of file reached (not found)
                 System.out.println("End of file reached and label not found.");
                 return false;
-            } else { // line = label
-                getNextInstruction();
             }
+            // if we arrive here, line = label
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
         }
-        return true;
+        return true; // line = label
     }
 
 }

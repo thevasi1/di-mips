@@ -25,13 +25,13 @@ public class DI_MIPS {
     private static final int NUM_REG_MACHINE = 16;
     static Register[] registers = new Register[NUM_REG_MACHINE];
     int cicle = 1;
-    File_Reader config = new File_Reader("registers.txt");
-    File_Reader program = new File_Reader("program.txt");
+    //File_Reader config = new File_Reader("registers.txt");
+    File_Reader program = new File_Reader("program.txt", registers);
     Stack<Instruction> stack = new Stack();
     ArrayList<Instruction> execution = new ArrayList();
     
     private void begin() {
-        config.initRegisters(registers);
+        //config.initRegisters(registers);
         
         
         boolean run = true;
