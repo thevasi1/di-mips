@@ -20,13 +20,23 @@ import register.Register;
  */
 public class File_Reader {
     
-    static String line;
-    static Instruction current_inst;
-    static int numLin_inst = 0;
+    private String line;
+    private static int numLin_inst = 0;
+    private String file;
+    private BufferedReader br;
 
-    public void initRegisters(String file, Register[] registers) { // REGISTERS
+    public File_Reader(String file) {
+        this.file = file;
+        try (BufferedReader buffread = new BufferedReader(new FileReader(file))){
+            br = buffread;
+        } catch (IOException e){
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+    }
+
+    public void initRegisters(Register[] registers) { // REGISTERS
         int num_reg = 0;
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+        try {
             while ((line = br.readLine()) != null) {
                 char[] lineArr = line.toCharArray();
                 int i = 0;
@@ -58,9 +68,9 @@ public class File_Reader {
         }
     }
     
-    public Instruction getNextInstruction(String file) { // INSTRUCTIONS
+    public Instruction getNextInstruction() { // INSTRUCTIONS
 
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+        try {
             if ((line = br.readLine()) == null) { // Read the String line
                 System.out.println("End of file reached.");
             } else {
@@ -125,9 +135,8 @@ public class File_Reader {
                 }
 
 
-                Instruction inst = new Instruction(numLin_inst, op, dst, src1, src2, Stages.F);
+                Instruction inst = new Instruction(numLin_inst, op, dst, src1, src2, Stages.F, "");
                 numLin_inst++;
-                // readLine(file);
 
                 return inst;
             }
@@ -137,24 +146,12 @@ public class File_Reader {
         return null; // Only in failure or end-of-file case
     }
 
-//    private static boolean readLine(String file) { // Generic file reader in java for a txt file.
-//        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-//            if ((line = br.readLine()) == null) { // Read the String line
-//                System.out.println("End of file reached.");
-//                return false; // If it's done readding the file
-//            }
-//        } catch (IOException e) {
-//            System.err.println("Error reading file: " + e.getMessage());
-//        }
-//        return true;
-//    }
-
-    private Operator transformIntoOp(String opStr) {
+    private static Operator transformIntoOp(String opStr) {
         Operator op = Operator.valueOf(opStr);
         return op;
     }
 
-    private Register transformIntoReg(String dstStr) {
+    private static Register transformIntoReg(String dstStr) {
         char[] dstCharArr = dstStr.toCharArray();
         int i = 0;
         String valueStr = "";
@@ -172,8 +169,9 @@ public class File_Reader {
         return reg;
     }
 
-    public boolean findBranchLine(String file, String label){
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+    public boolean findBranchLine(String label){
+        try {
+            br = new BufferedReader(new FileReader(file)); // We read the file from the beginning
             numLin_inst = 0;
             while ((line = br.readLine()) != null) {
                 numLin_inst++;
@@ -186,7 +184,7 @@ public class File_Reader {
                 System.out.println("End of file reached and label not found.");
                 return false;
             } else { // line = label
-                getNextInstruction(file);
+                getNextInstruction();
             }
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());

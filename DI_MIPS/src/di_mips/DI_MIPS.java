@@ -69,7 +69,7 @@ public class DI_MIPS {
         
         // In loop
             // Read instructions
-            Instruction inst = File_Reader.getNextInstruction("program.txt");
+            Instruction inst = program.getNextInstruction();
             //      Parse instructions
             // Add the convinient instructions to the queue
             // Execute the instructions on the queue
