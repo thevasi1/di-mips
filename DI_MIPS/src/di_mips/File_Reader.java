@@ -26,8 +26,8 @@ public class File_Reader {
     private String reg_file = "registers.txt";
     private BufferedReader br;
 
-    public File_Reader(String inst_file, Register[] registers) {
-        this.inst_file = inst_file;
+    public File_Reader(String inst_f, Register[] registers) {
+        this.inst_file = inst_f;
         try (BufferedReader br_reg = new BufferedReader(new FileReader(reg_file))){
             br = br_reg; // We read the registers file first
             initRegisters(registers);
@@ -41,6 +41,7 @@ public class File_Reader {
 
     private void initRegisters(Register[] registers) throws IOException{ // REGISTERS
         int num_reg = 0;
+        String num_reg_str = "";
         while ((line = br.readLine()) != null) {
             char[] lineArr = line.toCharArray();
             int i = 0;
@@ -48,24 +49,33 @@ public class File_Reader {
             String R_value = "";
             int R_num_value;
 
-            while (lineArr[i] == 'R' || lineArr[i] != ' ' || lineArr[i] != '=') { // Skip until we find the value (number)
+            while (lineArr[i] == ' '|| lineArr[i] == 'R') { // Skip until we find num_reg
+                i++;
+            }
+            while (Character.isDigit(lineArr[i])) { // Keep the register's number
+                num_reg_str += Character.toString(lineArr[i]);
+                i++;
+            }
+            while (lineArr[i] == ' '|| lineArr[i] == '=') { // Skip until we find the value (number)
                 i++;
             }
             while (i < lineArr.length) { // Read value (number) until we get to the end of line
                 if (Character.isDigit(lineArr[i])) {
                     R_value += lineArr[i];
                     i++;
-                } else {
+                } else { // Register value is not a number
                     System.out.println("User error dtected!!!"
-                            + "\n Wrong register value at line " + num_reg + "of file " + inst_file);
+                            + "\n Wrong register value at line " + num_reg + "of file " + reg_file);
                     i++;
                 }
             }
 
             R_num_value = Integer.valueOf(R_value);
             Register register = new Register(R_num_value);
+            
+            num_reg = Integer.valueOf(num_reg_str);
             registers[num_reg] = register;
-            num_reg++;
+            System.out.print("R" + num_reg_str+": " + registers[num_reg].getValue());
         }
     }
     
@@ -95,6 +105,9 @@ public class File_Reader {
                     i++;
                 }
                 op = transformIntoOp(opStr);
+                if (op == null) { // It is a label or an error (we skip in both cases)
+                    getNextInstruction();
+                }
                 i++;
 
                 if ("LD".equals(opStr) || "SW".equals(opStr)) { // LD, SW
@@ -106,7 +119,7 @@ public class File_Reader {
                     dst = transformIntoReg(dstStr);
                     i++;
 
-                    src1 = null;                // src1
+                    src1 = null;                // src1 (is not used)
 
                     while (lineArr[i] != ';') { // src2
                         src2Str += lineArr[i];
@@ -147,8 +160,13 @@ public class File_Reader {
     }
 
     private static Operator transformIntoOp(String opStr) {
-        Operator op = Operator.valueOf(opStr);
-        return op;
+        try {
+            Operator op = Operator.valueOf(opStr);
+            return op;
+        } catch (IllegalArgumentException e) {
+            System.out.println("Label declaration detected.");
+            return null;
+        }
     }
 
     private static Register transformIntoReg(String dstStr) {
