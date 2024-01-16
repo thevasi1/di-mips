@@ -21,7 +21,6 @@ public class DI_MIPS {
     /**
      * @param args the command line arguments
      */
-    
     private static final int NUM_REG_MACHINE = 16;
     static Register[] registers = new Register[NUM_REG_MACHINE];
     int cicle = 1;
@@ -29,38 +28,47 @@ public class DI_MIPS {
     File_Reader program = new File_Reader("program.txt", registers);
     Stack<Instruction> stack = new Stack();
     ArrayList<Instruction> execution = new ArrayList();
-    Executor executor = new Executor();
-    
+    static Executor executor = new Executor();
+
     private void begin() {
         //config.initRegisters(registers);
-        
-        
+
+        int programLine = 0;
         boolean run = true;
         Instruction ins1;
         Instruction ins2;
-        while(run){
-            if(!stack.isEmpty()){
+        while (run) {
+            if (!stack.isEmpty()) {
                 ins1 = stack.pop();
+                ins1.setId(programLine);
+                programLine++;
                 ins2 = program.getNextInstruction();
+                ins2.setId(programLine);
+                programLine++;
             } else {
                 ins1 = program.getNextInstruction();
+                ins1.setId(programLine);
+                programLine++;
                 ins2 = program.getNextInstruction();
-            }
-            
-            if(ins1 != null && ins2 != null && !ins1.canBeInASequence(ins2)){
-                stack.push(ins2);
-                ins2 = new Instruction(0, Operator.NOP, null, null, null, Stages.F, null);
+                ins2.setId(programLine);
+                programLine++;
             }
 
-            //add dependencies
-            ins1.addDependencies(cicle);
-            ins2.addDependencies(cicle);
-            
-            //add the instructions to the execution
-            if(ins1 != null){
+            if (ins1 != null && ins2 != null && !ins1.canBeInASequence(ins2)) {
+                stack.push(ins2);
+                ins2 = new Instruction(ins2.getId(), Operator.NOP, null, null, null, Stages.F, null);
+            }
+
+            if (ins1 != null) {
+                //add dependencies ins1
+                ins1.addDependencies(cicle);
+                //add the ins1 to the execution
                 execution.add(ins1);
             }
-            if(ins2 != null){
+            if (ins2 != null) {
+                //add dependencies ins2
+                ins2.addDependencies(cicle);
+                //add the ins2 to the execution
                 execution.add(ins2);
             }
 
@@ -68,42 +76,24 @@ public class DI_MIPS {
             for (int i = 0; i < execution.size(); i++) {
                 executor.executeStage(execution.get(i), cicle);
                 //when an instruction is finished we delete it
-                if(execution.get(i).getStage().equals(Stages.END)){
+                if (execution.get(i).getStage().equals(Stages.END)) {
                     execution.remove(i);
                     //decrease the index
                     i--;
                 }
             }
-            
-            if(execution.isEmpty()){
+
+            if (execution.isEmpty()) {
                 run = false;
             }
-            
+
             cicle++;
         }
-        
-        // In loop
-            // Read instructions
-            Instruction inst = program.getNextInstruction();
-            //      Parse instructions
-            // Add the convinient instructions to the queue
-            // Execute the instructions on the queue
-            // Refresh the queue
-            
-            
-            
-            
-        // Can Execute?
-        // TRUE
-            // Execute
-        // FALSE
-            // Stall this and all the next instructions
     }
-    
+
     public static void main(String[] args) {
 
         (new DI_MIPS()).begin();
-
     }
-    
+
 }

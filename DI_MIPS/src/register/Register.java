@@ -17,7 +17,7 @@ import java.util.Stack;
 public class Register {
     
     int value;
-    ArrayList<Dependency> dependencies;
+    ArrayList<Dependency> dependencies = new ArrayList();
 
     public Register(int value){
         this.value = value;

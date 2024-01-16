@@ -15,7 +15,8 @@ import writer.File_Writer;
  */
 public class Executor {
 
-    boolean previousStalled = false;
+    int previousCicle = 0;
+    boolean stall = false;
     File_Writer fw = new File_Writer();
     
     public Executor() {
@@ -28,8 +29,23 @@ public class Executor {
      * @param cicle cicle of the execution of the stage
      */
     public void executeStage(Instruction ins, int cicle) {
-        if (!ins.getOperator().equals(Operator.NOP) && canExecute(ins)) {
-            previousStalled = false;
+        if(cicle == previousCicle + 1){
+            stall = false;
+            previousCicle = cicle;
+        }
+        
+        if(ins.getOperator().equals(Operator.NOP)){
+            if(stall){
+                //stall
+            } else {
+                fw.writeStage(cicle, ins.getId(), Stages.S, ins.getOperator());
+                ins.setNextStage();
+            }
+        } else if(!canExecute(ins) || stall){
+            stall = true;
+            fw.writeStage(cicle, ins.getId(), Stages.S, ins.getOperator());
+        } else {
+            stall = false;
             switch (ins.getOperator()) {
                 case ADD:
                     executeADD(ins, cicle);
@@ -47,16 +63,7 @@ public class Executor {
                     executeBEQ(ins, cicle);
                     break;
             }
-        } else if(ins.getOperator().equals(Operator.NOP)){
-            if(previousStalled){
-                //stall
-            } else {
-                ins.setNextStage();
-            }
-        } else if(!ins.getOperator().equals(Operator.NOP) && !canExecute(ins)){
-            previousStalled = true;
-            fw.writeStage(cicle, ins.getId(), Stages.S, ins.getOperator());
-        }
+        } 
     }
 
     private void executeADD(Instruction ins, int cicle) {
@@ -134,5 +141,9 @@ public class Executor {
             cantExecute = ins.getSrc2().hasDependency();
         }
         return !cantExecute;
+    }
+    
+    public void makeFile(){
+        fw.makeFile();
     }
 }
