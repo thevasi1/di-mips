@@ -29,6 +29,7 @@ public class DI_MIPS {
     File_Reader program = new File_Reader("program.txt", registers);
     Stack<Instruction> stack = new Stack();
     ArrayList<Instruction> execution = new ArrayList();
+    Executor executor = new Executor();
     
     private void begin() {
         //config.initRegisters(registers);
@@ -46,7 +47,7 @@ public class DI_MIPS {
                 ins2 = program.getNextInstruction();
             }
             
-            if(!ins1.canBeInASequence(ins2)){
+            if(ins1 != null && ins2 != null && !ins1.canBeInASequence(ins2)){
                 stack.push(ins2);
                 ins2 = new Instruction(0, Operator.NOP, null, null, null, Stages.F, null);
             }
@@ -56,13 +57,27 @@ public class DI_MIPS {
             ins2.addDependencies(cicle);
             
             //add the instructions to the execution
-            execution.add(ins1);
-            execution.add(ins2);
+            if(ins1 != null){
+                execution.add(ins1);
+            }
+            if(ins2 != null){
+                execution.add(ins2);
+            }
 
             //execute
+            for (int i = 0; i < execution.size(); i++) {
+                executor.executeStage(execution.get(i), cicle);
+                //when an instruction is finished we delete it
+                if(execution.get(i).getStage().equals(Stages.END)){
+                    execution.remove(i);
+                    //decrease the index
+                    i--;
+                }
+            }
             
-            //if necesary remove dependencies and instructions that are finished
-            
+            if(execution.isEmpty()){
+                run = false;
+            }
             
             cicle++;
         }
