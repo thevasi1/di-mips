@@ -23,16 +23,17 @@ public class File_Reader {
     private String line;
     private static int numLin_inst = 0;
     private String inst_file;
-    private String reg_file = "registers.txt";
-    private BufferedReader br;
+    private String reg_file = "register.txt";
+    BufferedReader br = null;
 
     public File_Reader(String inst_f, Register[] registers) {
         this.inst_file = inst_f;
-        try (BufferedReader br_reg = new BufferedReader(new FileReader(reg_file))){
-            br = br_reg; // We read the registers file first
+        try {
+            br = new BufferedReader(new FileReader(reg_file));
+            //br = br_reg; // We read the registers file first
             initRegisters(registers);
-            BufferedReader br_inst = new BufferedReader(new FileReader(inst_file));
-            br = br_inst;
+            br = new BufferedReader(new FileReader(inst_file));
+            //br = br_inst;
         } catch (IOException e){
             System.err.println("Error reading file: " + e.getMessage());
         }
@@ -40,10 +41,12 @@ public class File_Reader {
     }
 
     private void initRegisters(Register[] registers) throws IOException{ // REGISTERS
+        System.out.println("init reg");
         int num_reg = 0;
-        String num_reg_str = "";
+        String num_reg_str;
         while ((line = br.readLine()) != null) {
             char[] lineArr = line.toCharArray();
+            num_reg_str = "";
             int i = 0;
 
             String R_value = "";
@@ -74,8 +77,9 @@ public class File_Reader {
             Register register = new Register(R_num_value);
             
             num_reg = Integer.valueOf(num_reg_str);
+            System.out.println("num_reg: " + num_reg);
             registers[num_reg] = register;
-            System.out.print("R" + num_reg_str+": " + registers[num_reg].getValue());
+            System.out.println("R" + num_reg_str+": " + registers[num_reg].getValue());
         }
     }
     
@@ -178,6 +182,7 @@ public class File_Reader {
         while (!Character.isDigit(dstCharArr[i])){ // Skip until we find the number
             i++;
         }
+        i--;
         while (Character.isDigit(dstCharArr[i])){
             valueStr += String.valueOf(dstCharArr[i]);
             i++;
