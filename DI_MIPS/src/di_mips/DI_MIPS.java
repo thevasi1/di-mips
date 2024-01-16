@@ -25,7 +25,7 @@ public class DI_MIPS {
     static Register[] registers = new Register[NUM_REG_MACHINE];
     int cicle = 1;
     //File_Reader config = new File_Reader("registers.txt");
-    File_Reader program = new File_Reader("program.txt", registers);
+    File_Reader program = new File_Reader("instruction.txt", registers);
     Stack<Instruction> stack = new Stack();
     ArrayList<Instruction> execution = new ArrayList();
     static Executor executor = new Executor();
