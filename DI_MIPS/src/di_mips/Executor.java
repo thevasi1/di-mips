@@ -36,9 +36,9 @@ public class Executor {
         
         if(ins.getOperator().equals(Operator.NOP)){
             if(stall){
-                //stall
-            } else {
                 fw.writeStage(cicle, ins.getId(), Stages.S, ins.getOperator());
+            } else {
+                fw.writeStage(cicle, ins.getId(), ins.getStage(), ins.getOperator());
                 ins.setNextStage();
             }
         } else if(!canExecute(ins) || stall){
