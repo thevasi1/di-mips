@@ -30,18 +30,15 @@ public class File_Reader {
         this.inst_file = inst_f;
         try {
             br = new BufferedReader(new FileReader(reg_file));
-            //br = br_reg; // We read the registers file first
             initRegisters(registers);
             br = new BufferedReader(new FileReader(inst_file));
-            //br = br_inst;
         } catch (IOException e){
             System.err.println("Error reading file: " + e.getMessage());
         }
         
     }
 
-    private void initRegisters(Register[] registers) throws IOException{ // REGISTERS
-        System.out.println("init reg");
+    private void initRegisters(Register[] registers) throws IOException { // REGISTERS
         int num_reg = 0;
         String num_reg_str;
         while ((line = br.readLine()) != null) {
@@ -77,9 +74,9 @@ public class File_Reader {
             Register register = new Register(R_num_value);
             
             num_reg = Integer.valueOf(num_reg_str);
-            System.out.println("num_reg: " + num_reg);
+            // System.out.println("num_reg: " + num_reg);
             registers[num_reg] = register;
-            System.out.println("R" + num_reg_str+": " + registers[num_reg].getValue());
+            // System.out.println("R" + num_reg_str+": " + registers[num_reg].getValue());
         }
     }
     
@@ -103,6 +100,8 @@ public class File_Reader {
                 Register src2;
                 String src2Str = "";
                 
+                // Label
+                String label = "";
                 
                 while (lineArr[i] != ' ') { // op
                     opStr += lineArr[i];
@@ -125,12 +124,36 @@ public class File_Reader {
 
                     src1 = null;                // src1 (is not used)
 
-                    while (lineArr[i] != ';') { // src2
+                    while (i < lineArr.length) { // src2
                         src2Str += lineArr[i];
                         i++;
                     }
                     src2 = transformIntoReg(src2Str);
 
+                } else if ("BEQ".equals(opStr)) {               // BEQ
+                    
+                    dst = null;                 // dst (is not used)
+                    
+                    while (lineArr[i] != ',') { // src1
+                        src1Str += lineArr[i];
+                        i++;
+                    }
+                    src1 = transformIntoReg(src1Str);
+                    i++;
+                    while (lineArr[i] != ',') { // src2
+                        src2Str += lineArr[i];
+                        i++;
+                    }
+                    src2 = transformIntoReg(src2Str);
+                    i++;
+                    while (lineArr[i] == ' ') {
+                        i++;                        
+                    }
+                    while (i < lineArr.length) { // src2
+                        label += lineArr[i];
+                        i++;
+                    }
+                    
                 } else {                                        // ADD, SUB
                     while (lineArr[i] != ',') { // dst
                         dstStr += lineArr[i];
@@ -144,7 +167,7 @@ public class File_Reader {
                     }
                     src1 = transformIntoReg(src1Str);
                     i++;
-                    while (lineArr[i] != ';') { // src2
+                    while (i < lineArr.length) { // src2
                         src2Str += lineArr[i];
                         i++;
                     }
@@ -152,7 +175,7 @@ public class File_Reader {
                 }
 
 
-                Instruction inst = new Instruction(numLin_inst, op, dst, src1, src2, Stages.F, "");
+                Instruction inst = new Instruction(numLin_inst, op, dst, src1, src2, Stages.F, label);
                 numLin_inst++;
 
                 return inst;
@@ -173,20 +196,21 @@ public class File_Reader {
         }
     }
 
-    private static Register transformIntoReg(String dstStr) {
-        char[] dstCharArr = dstStr.toCharArray();
+    private static Register transformIntoReg(String regStr) {
+        System.out.println("regStr: " + regStr);
+        char[] regArr = regStr.toCharArray();
         int i = 0;
         String valueStr = "";
         int value;
         
-        while (!Character.isDigit(dstCharArr[i])){ // Skip until we find the number
+        while (!Character.isDigit(regArr[i])){ // Skip until we find the number
             i++;
         }
-        i--;
-        while (Character.isDigit(dstCharArr[i])){
-            valueStr += String.valueOf(dstCharArr[i]);
+        while (i < regArr.length) { // Keep the register's number
+            valueStr += Character.toString(regArr[i]);
             i++;
         }
+        System.out.println("valueStr: " + valueStr);
         value = Integer.valueOf(valueStr);
         Register reg = new Register(value);
         return reg;
