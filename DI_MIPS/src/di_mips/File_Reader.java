@@ -85,6 +85,11 @@ public class File_Reader {
             if ((line = br.readLine()) == null) { // Read the String line
                 System.out.println("End of file reached.");
             } else {
+                if ("".equals(line)) { // If line has nothing, skip
+                    if ((line = br.readLine()) == null) {
+                        System.out.println("End of file reached.");
+                    }
+                }
                 char[] lineArr = line.toCharArray();
                 int i = 0;
 
@@ -103,7 +108,7 @@ public class File_Reader {
                 // Label
                 String label = "";
                 
-                while (lineArr[i] != ' ') { // op
+                while (i < lineArr.length && lineArr[i] != ' ') { // op
                     opStr += lineArr[i];
                     i++;
                 }
@@ -112,25 +117,26 @@ public class File_Reader {
                     getNextInstruction();
                 }
                 i++;
+                System.out.println("opStr: " + opStr);
 
-                if ("LD".equals(opStr) || "SW".equals(opStr)) { // LD, SW
+                if ("LD".equals(opStr) || "SW".equals(opStr)) {             // LD, SW
 
-                    while (lineArr[i] != ',') { // dst
+                    while (lineArr[i] != ',') { // src2
+                        src2Str += lineArr[i];
+                        i++;
+                    }
+                    src2 = transformIntoReg(src2Str);
+
+                    src1 = null;                // src1 (is not used)
+
+                    while (lineArr[i] != ')') { // dst
                         dstStr += lineArr[i];
                         i++;
                     }
                     dst = transformIntoReg(dstStr);
                     i++;
 
-                    src1 = null;                // src1 (is not used)
-
-                    while (i < lineArr.length) { // src2
-                        src2Str += lineArr[i];
-                        i++;
-                    }
-                    src2 = transformIntoReg(src2Str);
-
-                } else if ("BEQ".equals(opStr)) {               // BEQ
+                } else if ("BEQ".equals(opStr)) {                           // BEQ
                     
                     dst = null;                 // dst (is not used)
                     
@@ -154,7 +160,7 @@ public class File_Reader {
                         i++;
                     }
                     
-                } else {                                        // ADD, SUB
+                } else if ("ADD".equals(opStr) || "SUB".equals(opStr)) {    // ADD, SUB
                     while (lineArr[i] != ',') { // dst
                         dstStr += lineArr[i];
                         i++;
@@ -172,8 +178,10 @@ public class File_Reader {
                         i++;
                     }
                     src2 = transformIntoReg(src2Str);
+                } else {
+                    System.out.println("ERROR!!! Operator badly intruded!");
+                    return null;
                 }
-
 
                 Instruction inst = new Instruction(numLin_inst, op, dst, src1, src2, Stages.F, label);
                 numLin_inst++;
@@ -197,7 +205,6 @@ public class File_Reader {
     }
 
     private static Register transformIntoReg(String regStr) {
-        System.out.println("regStr: " + regStr);
         char[] regArr = regStr.toCharArray();
         int i = 0;
         String valueStr = "";
@@ -210,7 +217,6 @@ public class File_Reader {
             valueStr += Character.toString(regArr[i]);
             i++;
         }
-        System.out.println("valueStr: " + valueStr);
         value = Integer.valueOf(valueStr);
         Register reg = new Register(value);
         return reg;
