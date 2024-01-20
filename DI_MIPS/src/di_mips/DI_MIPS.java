@@ -45,6 +45,7 @@ public class DI_MIPS {
                 ins1.setId(programLine);
                 programLine++;
                 ins2 = program.getNextInstruction();
+ 
                 ins2.setId(programLine);
                 programLine++;
             } else {
@@ -56,8 +57,8 @@ public class DI_MIPS {
                 programLine++;
             }
             
-            System.out.println(ins1.toString());
-            System.out.println(ins2.toString());
+            System.out.println("ins1:" + ins1.toString());
+            System.out.println("ins2:" + ins2.toString());
 
             if (ins1 != null && ins2 != null && !ins1.canBeInASequence(ins2)) {
                 stack.push(ins2);

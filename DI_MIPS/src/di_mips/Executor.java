@@ -131,12 +131,19 @@ public class Executor {
     }
 
     public boolean canExecute(Instruction ins) {
-        boolean cantExecute = ins.getDst().hasDependency();
+        boolean cantExecute = false;
+        if(ins.getDst() != null){
+            cantExecute = ins.getDst().hasDependency();
+        } 
         if (!cantExecute) {
-            cantExecute = ins.getSrc1().hasDependency();
+            if(ins.getSrc1() != null){
+                cantExecute = ins.getSrc1().hasDependency();
+            }
         }
         if (!cantExecute) {
-            cantExecute = ins.getSrc2().hasDependency();
+            if(ins.getSrc1() != null){
+                cantExecute = ins.getSrc2().hasDependency();
+            }
         }
         return !cantExecute;
     }

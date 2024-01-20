@@ -1,7 +1,6 @@
 ADD R0, R1, R12
 SUB R2, R0, R13
 LD R2, (R15)
-
 label
 ADD R0, R1, R12
 BEQ R0, R2, label
