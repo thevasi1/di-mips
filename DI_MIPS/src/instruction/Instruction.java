@@ -102,5 +102,13 @@ public class Instruction {
             stage = Stages.values()[position + 1];
         }
     }
+    
+    /**
+     *
+     * @return
+     */
+    public String toString(){
+        return "Instruction: " + id + "\no " + operator.toString() + "\nd " +dst.toString() + "\nsrc1 " +src1.toString() + "\nsrc2 " +src2.toString() + "\nsatge " +stage.toString();
+    }
 }
 

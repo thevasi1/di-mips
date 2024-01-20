@@ -10,6 +10,7 @@ import instruction.Operator;
 import instruction.Stages;
 import java.util.ArrayList;
 import java.util.Stack;
+import register.Memory;
 import register.Register;
 
 /**
@@ -23,6 +24,7 @@ public class DI_MIPS {
      */
     private static final int NUM_REG_MACHINE = 16;
     static Register[] registers = new Register[NUM_REG_MACHINE];
+    Memory mem = new Memory(255);
     int cicle = 1;
     //File_Reader config = new File_Reader("registers.txt");
     File_Reader program = new File_Reader("instruction.txt", registers);
@@ -53,6 +55,9 @@ public class DI_MIPS {
                 ins2.setId(programLine);
                 programLine++;
             }
+            
+            System.out.println(ins1.toString());
+            System.out.println(ins2.toString());
 
             if (ins1 != null && ins2 != null && !ins1.canBeInASequence(ins2)) {
                 stack.push(ins2);
@@ -74,7 +79,7 @@ public class DI_MIPS {
 
             //execute
             for (int i = 0; i < execution.size(); i++) {
-                executor.executeStage(execution.get(i), cicle);
+                executor.executeStage(execution.get(i), cicle, mem, program);
                 //when an instruction is finished we delete it
                 if (execution.get(i).getStage().equals(Stages.END)) {
                     execution.remove(i);

@@ -53,5 +53,9 @@ public class Register {
         }
         return false;
     }
+    
+    public String toString(){
+        return String.valueOf(value);
+    }
 }
 

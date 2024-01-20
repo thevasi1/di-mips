@@ -7,6 +7,7 @@ package di_mips;
 import instruction.Instruction;
 import instruction.Stages;
 import instruction.Operator;
+import register.Memory;
 import writer.File_Writer;
 
 /**
@@ -28,7 +29,7 @@ public class Executor {
      * @param ins instruction data
      * @param cicle cicle of the execution of the stage
      */
-    public void executeStage(Instruction ins, int cicle) {
+    public void executeStage(Instruction ins, int cicle, Memory mem, File_Reader fr) {
         if(cicle == previousCicle + 1){
             stall = false;
             previousCicle = cicle;
@@ -54,13 +55,13 @@ public class Executor {
                     executeSUB(ins, cicle);
                     break;
                 case LD:
-                    executeLD(ins, cicle);
+                    executeLD(ins, cicle, mem);
                     break;
                 case SW:
-                    executeSW(ins, cicle);
+                    executeSW(ins, cicle, mem);
                     break;
                 case BEQ:
-                    executeBEQ(ins, cicle);
+                    executeBEQ(ins, cicle, fr);
                     break;
             }
         } 
@@ -92,12 +93,10 @@ public class Executor {
         ins.setNextStage();
     }
 
-    private void executeLD(Instruction ins, int cicle) {
+    private void executeLD(Instruction ins, int cicle, Memory mem) {
         if (ins.getStage().equals(Stages.M)) {
-            //TODO
-            ins.getDst().setValue(ins.getSrc1().getValue());
+            ins.getDst().setValue(mem.getValue(ins.getSrc1().getValue()) );
             ins.getDst().removeDependency(ins.getId(), 'w');
-            ins.getSrc1().removeDependency(ins.getId(), 'r');
             ins.getSrc2().removeDependency(ins.getId(), 'r');
         }
         //send to executor stage executed
@@ -106,12 +105,10 @@ public class Executor {
         ins.setNextStage();
     }
 
-    private void executeSW(Instruction ins, int cicle) {
+    private void executeSW(Instruction ins, int cicle, Memory mem) {
         if (ins.getStage().equals(Stages.M)) {
-            //TODO
-            ins.getDst().setValue(ins.getSrc1().getValue());
-            ins.getDst().removeDependency(ins.getId(), 'w');
-            ins.getSrc1().removeDependency(ins.getId(), 'r');
+            mem.setValue(ins.getSrc2().getValue(), ins.getDst().getValue());
+            ins.getDst().removeDependency(ins.getId(), 'r');
             ins.getSrc2().removeDependency(ins.getId(), 'r');
         }
         //send to executor stage executed
@@ -120,10 +117,11 @@ public class Executor {
         ins.setNextStage();
     }
 
-    private void executeBEQ(Instruction ins, int cicle) {
+    private void executeBEQ(Instruction ins, int cicle, File_Reader fr) {
         if (ins.getStage().equals(Stages.D)) {
             if (ins.getSrc1().getValue() == ins.getSrc2().getValue()) {
                 //code to jump
+                fr.findBranchLine(ins.getLabel());
             }
         }
         //send to executor stage executed
