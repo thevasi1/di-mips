@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * 
  */
 package di_mips;
 
@@ -14,10 +12,7 @@ import instruction.Operator;
 import instruction.Stages;
 import register.Register;
 
-/**
- *
- * @author Tomas
- */
+
 public class File_Reader {
     
     private String line;
@@ -225,9 +220,7 @@ public class File_Reader {
     public boolean findBranchLine(String label){
         try {
             br = new BufferedReader(new FileReader(inst_file)); // We read the file from the beginning
-            numLin_inst = 0;
             while ((line = br.readLine()) != null) {
-                numLin_inst++;
                 if (line.equals(label)) {
                     System.out.println("Label found.");
                     break;
