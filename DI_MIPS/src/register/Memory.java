@@ -13,9 +13,8 @@ public class Memory {
     
     int[] data;
     
-    public Memory(int[] data){
-        this.data = new int[data.length];
-        this.data = data;
+    public Memory(int length){
+        this.data = new int[length];
     }
     
     public void setValue(int position, int value){
