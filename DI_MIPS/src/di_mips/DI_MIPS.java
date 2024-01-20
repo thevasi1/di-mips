@@ -45,39 +45,47 @@ public class DI_MIPS {
                 ins1.setId(programLine);
                 programLine++;
                 ins2 = program.getNextInstruction();
-                if(ins2 != null){
+                if (ins2 != null) {
                     ins2.setId(programLine);
-                programLine++;
+                    programLine++;
                 }
-                
             } else {
                 ins1 = program.getNextInstruction();
-                if(ins1 != null){
+                if (ins1 != null) {
                     ins1.setId(programLine);
-                programLine++;
+                    programLine++;
+                    
                 }
                 ins2 = program.getNextInstruction();
-                if(ins2 != null){
+                if (ins2 != null) {
                     ins2.setId(programLine);
-                programLine++;
+                    programLine++;
+                    
                 }
             }
             
-            System.out.println("ins1:" + ins1.toString());
-            System.out.println("ins2:" + ins2.toString());
-
+            if(ins1 != null){
+                System.out.println("ins1:" + ins1.toString());
+            }
+            
+            if(ins2 != null){
+                System.out.println("ins2:" + ins2.toString());
+            }
+            
             if (ins1 != null && ins2 != null && !ins1.canBeInASequence(ins2)) {
                 stack.push(ins2);
                 ins2 = new Instruction(ins2.getId(), Operator.NOP, null, null, null, Stages.F, null);
             }
 
             if (ins1 != null) {
+                
                 //add dependencies ins1
                 ins1.addDependencies(cicle);
                 //add the ins1 to the execution
                 execution.add(ins1);
             }
             if (ins2 != null) {
+                
                 //add dependencies ins2
                 ins2.addDependencies(cicle);
                 //add the ins2 to the execution
@@ -101,6 +109,8 @@ public class DI_MIPS {
 
             cicle++;
         }
+        
+        executor.makeFile();
     }
 
     public static void main(String[] args) {

@@ -112,7 +112,7 @@ public class Instruction {
         if(src1 == null){
              str = "Instruction: " + id + "\no " + operator.toString() + "\nd " +dst.toString() + "\nsrc1 " + "\nsrc2 " +src2.toString() + "\nsatge " +stage.toString();
         } else if(dst == null){
-             str = "Instruction: " + id + "\no " + operator.toString() + "\nd " +dst.toString() + "\nsrc1 " +src1.toString() + "\nsrc2 " + "\nsatge " +stage.toString();
+             str = "Instruction: " + id + "\no " + operator.toString() + "\nd " + "\nsrc1 " +src1.toString() + "\nsrc2 " +src2.toString()+ "\nsatge " +stage.toString();
         } else {
              str = "Instruction: " + id + "\no " + operator.toString() + "\nd " +dst.toString() + "\nsrc1 " +src1.toString() + "\nsrc2 " +src2.toString() + "\nsatge " +stage.toString();
         }

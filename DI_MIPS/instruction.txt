@@ -1,6 +1,7 @@
-ADD R0, R1, R12
-SUB R2, R0, R13
+ADD R0, R1, R13
+SUB R2, R0, R14
 LD R2, (R15)
 label
-ADD R0, R1, R12
+SUB R0, R0, R14
 BEQ R0, R2, label
+SW R2, (R12)

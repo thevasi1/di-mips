@@ -107,11 +107,7 @@ public class File_Reader {
                         i++;
                     }
                     op = transformIntoOp(opStr);
-                    if (op == null) { // It is a label or an error (we skip in both cases)
-                        getNextInstruction();
-                    }
                     i++;
-                    System.out.println("opStr: " + opStr);
 
                     if ("LD".equals(opStr) || "SW".equals(opStr)) {             // LD, SW
 

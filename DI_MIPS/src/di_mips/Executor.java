@@ -95,7 +95,7 @@ public class Executor {
 
     private void executeLD(Instruction ins, int cicle, Memory mem) {
         if (ins.getStage().equals(Stages.M)) {
-            ins.getDst().setValue(mem.getValue(ins.getSrc1().getValue()) );
+            ins.getDst().setValue(mem.getValue(ins.getSrc2().getValue()) );
             ins.getDst().removeDependency(ins.getId(), 'w');
             ins.getSrc2().removeDependency(ins.getId(), 'r');
         }
@@ -133,15 +133,18 @@ public class Executor {
     public boolean canExecute(Instruction ins) {
         boolean cantExecute = false;
         if(ins.getDst() != null){
+            System.out.println(ins.getLabel() + " has depemdency" +  ins.getDst().hasDependency());
             cantExecute = ins.getDst().hasDependency();
         } 
         if (!cantExecute) {
             if(ins.getSrc1() != null){
+                System.out.println(ins.getLabel() + " has depemdency" +  ins.getSrc1().hasDependency());
                 cantExecute = ins.getSrc1().hasDependency();
             }
         }
         if (!cantExecute) {
             if(ins.getSrc2() != null){
+                System.out.println(ins.getLabel() + " has depemdency" +  ins.getSrc2().hasDependency());
                 cantExecute = ins.getSrc2().hasDependency();
             }
         }
