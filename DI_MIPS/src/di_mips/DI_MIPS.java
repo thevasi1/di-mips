@@ -45,16 +45,22 @@ public class DI_MIPS {
                 ins1.setId(programLine);
                 programLine++;
                 ins2 = program.getNextInstruction();
- 
-                ins2.setId(programLine);
+                if(ins2 != null){
+                    ins2.setId(programLine);
                 programLine++;
+                }
+                
             } else {
                 ins1 = program.getNextInstruction();
-                ins1.setId(programLine);
+                if(ins1 != null){
+                    ins1.setId(programLine);
                 programLine++;
+                }
                 ins2 = program.getNextInstruction();
-                ins2.setId(programLine);
+                if(ins2 != null){
+                    ins2.setId(programLine);
                 programLine++;
+                }
             }
             
             System.out.println("ins1:" + ins1.toString());
