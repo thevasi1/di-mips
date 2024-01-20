@@ -22,12 +22,6 @@ import instruction.Stages;
  * @author Vasil
  */
 public class File_Writer {
-    /**
-     * TODO:
-     * validation for adding wrong type of operator to instruction
-     * (e.g. what if we have on second row instruction ADD with id 1 and we add
-     * stage from BEQ with the same id)
-     */
     private List<Map<Integer, Stages>> stages;
     private Map<Integer, Operator> instructionsOperators;
     private Map<Integer, Integer> instructionsStart;
@@ -93,7 +87,6 @@ public class File_Writer {
             }
             instructionOrder++;
         }
-        // TODO: validation here?
         return null;
     }
 
