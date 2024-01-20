@@ -141,7 +141,7 @@ public class Executor {
             }
         }
         if (!cantExecute) {
-            if(ins.getSrc1() != null){
+            if(ins.getSrc2() != null){
                 cantExecute = ins.getSrc2().hasDependency();
             }
         }

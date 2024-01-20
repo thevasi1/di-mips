@@ -69,120 +69,128 @@ public class File_Reader {
             Register register = new Register(R_num_value);
             
             num_reg = Integer.valueOf(num_reg_str);
-            // System.out.println("num_reg: " + num_reg);
             registers[num_reg] = register;
-            // System.out.println("R" + num_reg_str+": " + registers[num_reg].getValue());
         }
     }
     
     public Instruction getNextInstruction() { // INSTRUCTIONS
         try {
-            if ((line = br.readLine()) == null) { // Read the String line
+            Instruction inst = null;
+            while (inst == null) {
+                if ((line = br.readLine()) == null) { // Read the String line
                 System.out.println("End of file reached.");
-            } else {
-                if ("".equals(line)) { // If line has nothing, skip
-                    if ((line = br.readLine()) == null) {
-                        System.out.println("End of file reached.");
-                    }
-                }
-                char[] lineArr = line.toCharArray();
-                int i = 0;
-
-                // Operator
-                Operator op;
-                String opStr = "";
-
-                // Registers
-                Register dst;
-                String dstStr = "";
-                Register src1;
-                String src1Str = "";
-                Register src2;
-                String src2Str = "";
-                
-                // Label
-                String label = "";
-                
-                while (i < lineArr.length && lineArr[i] != ' ') { // op
-                    opStr += lineArr[i];
-                    i++;
-                }
-                op = transformIntoOp(opStr);
-                if (op == null) { // It is a label or an error (we skip in both cases)
-                    getNextInstruction();
-                }
-                i++;
-                System.out.println("opStr: " + opStr);
-
-                if ("LD".equals(opStr) || "SW".equals(opStr)) {             // LD, SW
-
-                    while (lineArr[i] != ',') { // src2
-                        src2Str += lineArr[i];
-                        i++;
-                    }
-                    src2 = transformIntoReg(src2Str);
-
-                    src1 = null;                // src1 (is not used)
-
-                    while (lineArr[i] != ')') { // dst
-                        dstStr += lineArr[i];
-                        i++;
-                    }
-                    dst = transformIntoReg(dstStr);
-                    i++;
-
-                } else if ("BEQ".equals(opStr)) {                           // BEQ
-                    
-                    dst = null;                 // dst (is not used)
-                    
-                    while (lineArr[i] != ',') { // src1
-                        src1Str += lineArr[i];
-                        i++;
-                    }
-                    src1 = transformIntoReg(src1Str);
-                    i++;
-                    while (lineArr[i] != ',') { // src2
-                        src2Str += lineArr[i];
-                        i++;
-                    }
-                    src2 = transformIntoReg(src2Str);
-                    i++;
-                    while (lineArr[i] == ' ') {
-                        i++;                        
-                    }
-                    while (i < lineArr.length) { // src2
-                        label += lineArr[i];
-                        i++;
-                    }
-                    
-                } else if ("ADD".equals(opStr) || "SUB".equals(opStr)) {    // ADD, SUB
-                    while (lineArr[i] != ',') { // dst
-                        dstStr += lineArr[i];
-                        i++;
-                    }
-                    dst = transformIntoReg(dstStr);
-                    i++;
-                    while (lineArr[i] != ',') { // src1
-                        src1Str += lineArr[i];
-                        i++;
-                    }
-                    src1 = transformIntoReg(src1Str);
-                    i++;
-                    while (i < lineArr.length) { // src2
-                        src2Str += lineArr[i];
-                        i++;
-                    }
-                    src2 = transformIntoReg(src2Str);
+                return null;
                 } else {
-                    System.out.println("ERROR!!! Operator badly intruded!");
-                    return null;
+                    if ("".equals(line)) { // If line has nothing, skip
+                        if ((line = br.readLine()) == null) {
+                            System.out.println("End of file reached.");
+                            return null;
+                        }
+                    }
+                    
+                    char[] lineArr = line.toCharArray();
+                    int i = 0;
+                    boolean isInstruction = true;
+
+                    // Operator
+                    Operator op;
+                    String opStr = "";
+
+                    // Registers
+                    Register dst = null;
+                    String dstStr = "";
+                    Register src1 = null;
+                    String src1Str = "";
+                    Register src2 = null;
+                    String src2Str = "";
+
+                    // Label
+                    String label = "";
+
+                    while (i < lineArr.length && lineArr[i] != ' ') { // op
+                        opStr += lineArr[i];
+                        i++;
+                    }
+                    op = transformIntoOp(opStr);
+                    if (op == null) { // It is a label or an error (we skip in both cases)
+                        getNextInstruction();
+                    }
+                    i++;
+                    System.out.println("opStr: " + opStr);
+
+                    if ("LD".equals(opStr) || "SW".equals(opStr)) {             // LD, SW
+
+                        while (lineArr[i] != ',') { // src2
+                            src2Str += lineArr[i];
+                            i++;
+                        }
+                        src2 = transformIntoReg(src2Str);
+
+                        src1 = null;                // src1 (is not used)
+
+                        while (lineArr[i] != ')') { // dst
+                            dstStr += lineArr[i];
+                            i++;
+                        }
+                        dst = transformIntoReg(dstStr);
+                        i++;
+
+                    } else if ("BEQ".equals(opStr)) {                           // BEQ
+
+                        dst = null;                 // dst (is not used)
+
+                        while (lineArr[i] != ',') { // src1
+                            src1Str += lineArr[i];
+                            i++;
+                        }
+                        src1 = transformIntoReg(src1Str);
+                        i++;
+                        while (lineArr[i] != ',') { // src2
+                            src2Str += lineArr[i];
+                            i++;
+                        }
+                        src2 = transformIntoReg(src2Str);
+                        i++;
+                        while (lineArr[i] == ' ') {
+                            i++;                        
+                        }
+                        while (i < lineArr.length) { // src2
+                            label += lineArr[i];
+                            i++;
+                        }
+
+                    } else if ("ADD".equals(opStr) || "SUB".equals(opStr)) {    // ADD, SUB
+                        while (lineArr[i] != ',') { // dst
+                            dstStr += lineArr[i];
+                            i++;
+                        }
+                        dst = transformIntoReg(dstStr);
+                        i++;
+                        while (lineArr[i] != ',') { // src1
+                            src1Str += lineArr[i];
+                            i++;
+                        }
+                        src1 = transformIntoReg(src1Str);
+                        i++;
+                        while (i < lineArr.length) { // src2
+                            src2Str += lineArr[i];
+                            i++;
+                        }
+                        src2 = transformIntoReg(src2Str);
+                    } else {
+                        numLin_inst--;
+                        isInstruction = false;
+                        inst = null;
+                    }
+                    
+                    if (isInstruction) {
+                        inst = new Instruction(numLin_inst, op, dst, src1, src2, Stages.F, label);
+                        numLin_inst++;
+                    }
                 }
-
-                Instruction inst = new Instruction(numLin_inst, op, dst, src1, src2, Stages.F, label);
-                numLin_inst++;
-
-                return inst;
             }
+            return inst;
+            
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
         }
