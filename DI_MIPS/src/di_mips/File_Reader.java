@@ -81,13 +81,8 @@ public class File_Reader {
                 System.out.println("End of file reached.");
                 return null;
                 } else {
-                    if ("".equals(line)) { // If line has nothing, skip
-                        if ((line = br.readLine()) == null) {
-                            System.out.println("End of file reached.");
-                            return null;
-                        }
-                    }
                     
+                    // Variables
                     char[] lineArr = line.toCharArray();
                     int i = 0;
                     boolean isInstruction = true;
