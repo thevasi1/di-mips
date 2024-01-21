@@ -20,12 +20,14 @@ public class File_Reader {
     private String inst_file;
     private String reg_file = "register.txt";
     BufferedReader br = null;
+    static Register[] registers;
 
     public File_Reader(String inst_f, Register[] registers) {
         this.inst_file = inst_f;
         try {
+            this.registers=registers;
             br = new BufferedReader(new FileReader(reg_file));
-            initRegisters(registers);
+            initRegisters();
             br = new BufferedReader(new FileReader(inst_file));
         } catch (IOException e){
             System.err.println("Error reading file: " + e.getMessage());
@@ -33,7 +35,7 @@ public class File_Reader {
         
     }
 
-    private void initRegisters(Register[] registers) throws IOException { // REGISTERS
+    private void initRegisters() throws IOException { // REGISTERS
         int num_reg = 0;
         String num_reg_str;
         while ((line = br.readLine()) != null) {
@@ -201,19 +203,18 @@ public class File_Reader {
     private static Register transformIntoReg(String regStr) {
         char[] regArr = regStr.toCharArray();
         int i = 0;
-        String valueStr = "";
-        int value;
+        String R_numberStr = "";
+        int R_number;
         
-        while (!Character.isDigit(regArr[i])){ // Skip until we find the number
+        while (!Character.isDigit(regArr[i])){ // Skip until we find the register number
             i++;
         }
         while (i < regArr.length) { // Keep the register's number
-            valueStr += Character.toString(regArr[i]);
+            R_numberStr += Character.toString(regArr[i]);
             i++;
         }
-        value = Integer.valueOf(valueStr);
-        Register reg = new Register(value);
-        return reg;
+        R_number = Integer.valueOf(R_numberStr);
+        return registers[R_number];
     }
 
     public boolean findBranchLine(String label){
