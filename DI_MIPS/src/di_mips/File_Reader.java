@@ -1,5 +1,7 @@
 /*
- * 
+ * Read the input (usually from the files "instruction.txt" and "register.txt" and
+ * interprete the content to tranlate it to objects that the Execution Calculation
+ * part can interpret.
  */
 package di_mips;
 
@@ -113,7 +115,7 @@ public class File_Reader {
 
                     if ("LD".equals(opStr) || "SW".equals(opStr)) {             // LD, SW
 
-                        while (lineArr[i] != ',') { // src2
+                        while (lineArr[i] != ',') { // dst
                             dstStr += lineArr[i];
                             i++;
                         }
@@ -121,7 +123,7 @@ public class File_Reader {
 
                         src1 = null;                // src1 (is not used)
 
-                        while (lineArr[i] != ')') { // dst
+                        while (lineArr[i] != ')') { // src2
                             src2Str += lineArr[i];
                             i++;
                         }
@@ -217,7 +219,7 @@ public class File_Reader {
         return registers[R_number];
     }
 
-    public boolean findBranchLine(String label){
+    public boolean findBranchLine(String label) {
         try {
             br = new BufferedReader(new FileReader(inst_file)); // We read the file from the beginning
             while ((line = br.readLine()) != null) {
