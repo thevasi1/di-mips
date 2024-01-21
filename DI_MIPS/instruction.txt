@@ -3,7 +3,6 @@ SUB R2, R0, R14
 SW R2, (R15)
 label
 SUB R0, R0, R14
-SW R3, (R12)
 BEQ R0, R2, label
 SW R3, (R12)
 SW R3, (R12)

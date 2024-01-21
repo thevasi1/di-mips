@@ -234,6 +234,7 @@ public class File_Reader {
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
         }
+        
         return true; // line = label
     }
 

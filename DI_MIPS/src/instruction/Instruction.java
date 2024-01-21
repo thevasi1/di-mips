@@ -109,6 +109,9 @@ public class Instruction {
      */
     public String toString(){
         String str;
+        if(operator.equals(Operator.NOP)){
+            return "NOP";
+        }
         if(src1 == null){
              str = "Instruction: " + id + "\no " + operator.toString() + "\nd " +dst.toString() + "\nsrc1 " + "\nsrc2 " +src2.toString() + "\nsatge " +stage.toString();
         } else if(dst == null){
