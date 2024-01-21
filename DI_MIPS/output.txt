@@ -1,9 +1,23 @@
-	1   2   3   4   5   6   7   8   
+	1   2   3   4   5   6   7   8   9   10   11   12   13   14   15   
 
 ADD	F   D   X   M   W   
 NOP	F   D   X   M   W   
 SUB	    F   D   X   M   W   
-LD	    F   D   X   M   W   
+SW	    F   D   X   M   W   
 SUB	        F   D   X   M   W   
-BEQ	        F   D   X   M   W   
+SW	        F   D   X   M   W   
+BEQ	            F   D   X   M   W   
 SW	            F   D   X   M   W   
+SW	                F   D   X   M   W   
+NOP	                F   D   X   M   W   
+SW	                    F   D   X   M   W   
+SUB	                    F   D   X   M   W   
+SW	                        F   D   X   M   W   
+BEQ	                        F   D   X   M   W   
+SW	                            F   D   X   M   W   
+NOP	                            F   D   X   M   W   
+SW	                                F   D   X   M   W   
+NOP	                                F   D   X   M   W   
+SW	                                    F   D   X   M   W   
+NOP	                                    F   D   X   M   W   
+SW	                                        F   D   X   M   W   

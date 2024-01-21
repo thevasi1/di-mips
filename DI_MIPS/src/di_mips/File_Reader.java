@@ -114,18 +114,18 @@ public class File_Reader {
                     if ("LD".equals(opStr) || "SW".equals(opStr)) {             // LD, SW
 
                         while (lineArr[i] != ',') { // src2
-                            src2Str += lineArr[i];
-                            i++;
-                        }
-                        src2 = transformIntoReg(src2Str);
-
-                        src1 = null;                // src1 (is not used)
-
-                        while (lineArr[i] != ')') { // dst
                             dstStr += lineArr[i];
                             i++;
                         }
                         dst = transformIntoReg(dstStr);
+
+                        src1 = null;                // src1 (is not used)
+
+                        while (lineArr[i] != ')') { // dst
+                            src2Str += lineArr[i];
+                            i++;
+                        }
+                        src2 = transformIntoReg(src2Str);
                         i++;
 
                     } else if ("BEQ".equals(opStr)) {                           // BEQ

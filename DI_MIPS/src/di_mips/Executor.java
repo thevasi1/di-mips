@@ -42,7 +42,7 @@ public class Executor {
                 fw.writeStage(cicle, ins.getId(), ins.getStage(), ins.getOperator());
                 ins.setNextStage();
             }
-        } else if(!canExecute(ins) || stall){
+        } else if(stall){
             stall = true;
             fw.writeStage(cicle, ins.getId(), Stages.S, ins.getOperator());
         } else {
@@ -68,11 +68,15 @@ public class Executor {
     }
 
     private void executeADD(Instruction ins, int cicle) {
-        if (ins.getStage().equals(Stages.X)) {
+        if (ins.getStage().equals(Stages.X) && canExecute(ins)) {
             ins.getDst().setValue(ins.getSrc1().getValue() + ins.getSrc2().getValue());
             ins.getDst().removeDependency(ins.getId(), 'w');
             ins.getSrc1().removeDependency(ins.getId(), 'r');
             ins.getSrc2().removeDependency(ins.getId(), 'r');
+        } else if(ins.getStage().equals(Stages.X) && !canExecute(ins)){
+            stall = true;
+            fw.writeStage(cicle, ins.getId(), Stages.S, ins.getOperator());
+            return;
         }
         //send to executor stage executed
         fw.writeStage(cicle, ins.getId(), ins.getStage(), ins.getOperator());
@@ -81,11 +85,15 @@ public class Executor {
     }
 
     private void executeSUB(Instruction ins, int cicle) {
-        if (ins.getStage().equals(Stages.X)) {
+        if (ins.getStage().equals(Stages.X) && canExecute(ins)) {
             ins.getDst().setValue(ins.getSrc1().getValue() - ins.getSrc2().getValue());
             ins.getDst().removeDependency(ins.getId(), 'w');
             ins.getSrc1().removeDependency(ins.getId(), 'r');
             ins.getSrc2().removeDependency(ins.getId(), 'r');
+        } else if(ins.getStage().equals(Stages.X) && !canExecute(ins)){
+            stall = true;
+            fw.writeStage(cicle, ins.getId(), Stages.S, ins.getOperator());
+            return;
         }
         //send to executor stage executed
         fw.writeStage(cicle, ins.getId(), ins.getStage(), ins.getOperator());
@@ -94,10 +102,14 @@ public class Executor {
     }
 
     private void executeLD(Instruction ins, int cicle, Memory mem) {
-        if (ins.getStage().equals(Stages.M)) {
+        if (ins.getStage().equals(Stages.M) && canExecute(ins)) {
             ins.getDst().setValue(mem.getValue(ins.getSrc2().getValue()) );
             ins.getDst().removeDependency(ins.getId(), 'w');
             ins.getSrc2().removeDependency(ins.getId(), 'r');
+        } else if(ins.getStage().equals(Stages.M) && !canExecute(ins)){
+            stall = true;
+            fw.writeStage(cicle, ins.getId(), Stages.S, ins.getOperator());
+            return;
         }
         //send to executor stage executed
         fw.writeStage(cicle, ins.getId(), ins.getStage(), ins.getOperator());
@@ -106,10 +118,14 @@ public class Executor {
     }
 
     private void executeSW(Instruction ins, int cicle, Memory mem) {
-        if (ins.getStage().equals(Stages.M)) {
+        if (ins.getStage().equals(Stages.M) && canExecute(ins)) {
             mem.setValue(ins.getSrc2().getValue(), ins.getDst().getValue());
             ins.getDst().removeDependency(ins.getId(), 'r');
             ins.getSrc2().removeDependency(ins.getId(), 'r');
+        } else if(ins.getStage().equals(Stages.M) &&!canExecute(ins)){
+            stall = true;
+            fw.writeStage(cicle, ins.getId(), Stages.S, ins.getOperator());
+            return;
         }
         //send to executor stage executed
         fw.writeStage(cicle, ins.getId(), ins.getStage(), ins.getOperator());
@@ -118,11 +134,14 @@ public class Executor {
     }
 
     private void executeBEQ(Instruction ins, int cicle, File_Reader fr) {
-        if (ins.getStage().equals(Stages.D)) {
+        if (ins.getStage().equals(Stages.D) && canExecute(ins)) {
             if (ins.getSrc1().getValue() == ins.getSrc2().getValue()) {
-                //code to jump
                 fr.findBranchLine(ins.getLabel());
             }
+        } else if(ins.getStage().equals(Stages.D) && !canExecute(ins)){
+            stall = true;
+            fw.writeStage(cicle, ins.getId(), Stages.S, ins.getOperator());
+            return;
         }
         //send to executor stage executed
         fw.writeStage(cicle, ins.getId(), ins.getStage(), ins.getOperator());
@@ -133,19 +152,19 @@ public class Executor {
     public boolean canExecute(Instruction ins) {
         boolean cantExecute = false;
         if(ins.getDst() != null){
-            System.out.println(ins.getLabel() + " has depemdency" +  ins.getDst().hasDependency());
-            cantExecute = ins.getDst().hasDependency();
+            //System.out.println(ins.getId() + " has depemdency " + ins.getDst().hasDependency(ins.getDst().getDependency(ins.getId(), 'w'))) ;
+            cantExecute = ins.getDst().hasDependency(ins.getDst().getDependency(ins.getId(), 'w'));
         } 
         if (!cantExecute) {
             if(ins.getSrc1() != null){
-                System.out.println(ins.getLabel() + " has depemdency" +  ins.getSrc1().hasDependency());
-                cantExecute = ins.getSrc1().hasDependency();
+                //System.out.println(ins.getId() + " has depemdency" +  ins.getSrc1().hasDependency(ins.getSrc1().getDependency(ins.getId(), 'r')));
+                cantExecute = ins.getSrc1().hasDependency(ins.getSrc1().getDependency(ins.getId(), 'r'));
             }
         }
         if (!cantExecute) {
             if(ins.getSrc2() != null){
-                System.out.println(ins.getLabel() + " has depemdency" +  ins.getSrc2().hasDependency());
-                cantExecute = ins.getSrc2().hasDependency();
+                //System.out.println(ins.getId() + " has depemdency" +  ins.getSrc2().hasDependency(ins.getSrc2().getDependency(ins.getId(), 'r')));
+                cantExecute = ins.getSrc2().hasDependency(ins.getSrc2().getDependency(ins.getId(), 'r'));
             }
         }
         return !cantExecute;
