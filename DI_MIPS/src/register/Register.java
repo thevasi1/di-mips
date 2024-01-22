@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Object register.
  */
 package register;
 
@@ -12,7 +10,7 @@ import java.util.Stack;
 
 /**
  *
- * @author Tomas
+ * @author group_1
  */
 public class Register {
 

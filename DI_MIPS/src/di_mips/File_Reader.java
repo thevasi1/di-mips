@@ -14,7 +14,10 @@ import instruction.Operator;
 import instruction.Stages;
 import register.Register;
 
-
+/**
+ *
+ * @author group_1
+ */
 public class File_Reader {
     
     private String line;
@@ -197,8 +200,7 @@ public class File_Reader {
             Operator op = Operator.valueOf(opStr);
             return op;
         } catch (IllegalArgumentException e) {
-            System.out.println("Label declaration detected.");
-            return null;
+            return null; // Label declaration or comment detected.
         }
     }
 

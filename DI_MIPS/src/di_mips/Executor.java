@@ -12,7 +12,7 @@ import writer.File_Writer;
 
 /**
  *
- * @author Usuario
+ * @author group_1
  */
 public class Executor {
 

@@ -7,7 +7,7 @@ import register.Register;
 
 /**
  *
- * @author Tomas
+ * @author group_1
  */
 public class Instruction {
 
